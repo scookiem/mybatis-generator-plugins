@@ -21,20 +21,37 @@ public class GeneratorSwagger2Doc extends PluginAdapter {
 
     @Override
     public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
-        String classAnnotation = "@ApiModel(value=\"" + topLevelClass.getType()  + "\")";
-        if(!topLevelClass.getAnnotations().contains(classAnnotation)) {
+        String classAnnotation = "@ApiModel";
+        String fieldAnnotation = "@ApiModelProperty($(content))";
+        if (!topLevelClass.getAnnotations().contains(classAnnotation)) {
             topLevelClass.addAnnotation(classAnnotation);
         }
 
-        String apiModelAnnotationPackage =  properties.getProperty("apiModelAnnotationPackage");
+        String apiModelAnnotationPackage = properties.getProperty("apiModelAnnotationPackage");
         String apiModelPropertyAnnotationPackage = properties.getProperty("apiModelPropertyAnnotationPackage");
-        if(null == apiModelAnnotationPackage) apiModelAnnotationPackage = "io.swagger.annotations.ApiModel";
-        if(null == apiModelPropertyAnnotationPackage) apiModelPropertyAnnotationPackage = "io.swagger.annotations.ApiModelProperty";
-
+        String ignoreField = properties.getProperty("ignoreField");
+        String[] ignoreFieldArray = null;
+        if (ignoreField != null && ignoreField.trim().length() > 0) {
+            ignoreFieldArray = ignoreField.split(",");
+        }
+        if (null == apiModelAnnotationPackage) apiModelAnnotationPackage = "io.swagger.annotations.ApiModel";
+        if (null == apiModelPropertyAnnotationPackage)
+            apiModelPropertyAnnotationPackage = "io.swagger.annotations.ApiModelProperty";
         topLevelClass.addImportedType(apiModelAnnotationPackage);
         topLevelClass.addImportedType(apiModelPropertyAnnotationPackage);
-
-        field.addAnnotation("@ApiModelProperty(value=\"" + introspectedColumn.getJavaProperty() + introspectedColumn.getRemarks() + "\")");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("value=\"");
+        stringBuilder.append(introspectedColumn.getRemarks());
+        stringBuilder.append("\"");
+        if (ignoreFieldArray != null && ignoreFieldArray.length > 0) {
+            for (String ignore : ignoreFieldArray) {
+                if (ignore.equalsIgnoreCase(introspectedColumn.getActualColumnName())) {
+                    stringBuilder.append(", ");
+                    stringBuilder.append("hidden = true");
+                }
+            }
+        }
+        field.addAnnotation(fieldAnnotation.replace("$(content)", stringBuilder.toString()));
         return super.modelFieldGenerated(field, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
     }
 }
