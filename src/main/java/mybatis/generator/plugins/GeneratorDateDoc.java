@@ -25,6 +25,10 @@ public class GeneratorDateDoc extends PluginAdapter {
     public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
         String dateFormat = properties.getProperty("dateformat");
         String jsonFormat = properties.getProperty("jsonformat");
+        String locale = properties.getProperty("locale");
+        if (locale == null || locale.trim().length() == 0) {
+            locale = "GMT+8";
+        }
         String dateFormatImportType = "org.springframework.format.annotation.DateTimeFormat";
         String jsonFormatImportType = "com.fasterxml.jackson.annotation.JsonFormat";
 
@@ -36,7 +40,7 @@ public class GeneratorDateDoc extends PluginAdapter {
         }
         if (jsonFormat != null && !"".equals(jsonFormat.trim())) {
             if (Date.class.getName().equals(field.getType().getFullyQualifiedName())) {
-                field.addAnnotation("@JsonFormat(pattern = \"" + jsonFormat + "\")");
+                field.addAnnotation("@JsonFormat(pattern = \"" + jsonFormat + "\", timezone=\"" + locale + "\")");
                 topLevelClass.addImportedType(jsonFormatImportType);
             }
         }
