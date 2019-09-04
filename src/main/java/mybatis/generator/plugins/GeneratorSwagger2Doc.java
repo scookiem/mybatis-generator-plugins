@@ -40,7 +40,14 @@ public class GeneratorSwagger2Doc extends PluginAdapter {
         topLevelClass.addImportedType(apiModelAnnotationPackage);
         topLevelClass.addImportedType(apiModelPropertyAnnotationPackage);
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("value=\"");
+        stringBuilder.append("value = \"");
+        stringBuilder.append(introspectedColumn.getRemarks());
+        stringBuilder.append("\"");
+        if (String.class.getName().equals(field.getType().getFullyQualifiedName())) {
+            stringBuilder.append(", example = \"");
+            stringBuilder.append(introspectedColumn.getRemarks());
+            stringBuilder.append("\"");
+        }
         stringBuilder.append(introspectedColumn.getRemarks());
         stringBuilder.append("\"");
         if (ignoreFieldArray != null && ignoreFieldArray.length > 0) {
