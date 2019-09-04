@@ -48,8 +48,6 @@ public class GeneratorSwagger2Doc extends PluginAdapter {
             stringBuilder.append(introspectedColumn.getRemarks());
             stringBuilder.append("\"");
         }
-        stringBuilder.append(introspectedColumn.getRemarks());
-        stringBuilder.append("\"");
         if (ignoreFieldArray != null && ignoreFieldArray.length > 0) {
             for (String ignore : ignoreFieldArray) {
                 if (ignore.equalsIgnoreCase(introspectedColumn.getActualColumnName())) {
