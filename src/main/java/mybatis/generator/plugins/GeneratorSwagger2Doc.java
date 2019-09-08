@@ -23,8 +23,12 @@ public class GeneratorSwagger2Doc extends PluginAdapter {
     public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
         String classAnnotation = "@ApiModel";
         String fieldAnnotation = "@ApiModelProperty($(content))";
+        String jsonInclude = "@JsonInclude(JsonInclude.Include.NON_NULL)";
         if (!topLevelClass.getAnnotations().contains(classAnnotation)) {
             topLevelClass.addAnnotation(classAnnotation);
+        }
+        if (!topLevelClass.getAnnotations().contains(jsonInclude)) {
+            topLevelClass.addAnnotation(jsonInclude);
         }
 
         String apiModelAnnotationPackage = properties.getProperty("apiModelAnnotationPackage");
@@ -39,6 +43,7 @@ public class GeneratorSwagger2Doc extends PluginAdapter {
             apiModelPropertyAnnotationPackage = "io.swagger.annotations.ApiModelProperty";
         topLevelClass.addImportedType(apiModelAnnotationPackage);
         topLevelClass.addImportedType(apiModelPropertyAnnotationPackage);
+        topLevelClass.addImportedType("com.fasterxml.jackson.annotation.JsonInclude");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("value = \"");
         stringBuilder.append(introspectedColumn.getRemarks());
