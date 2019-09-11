@@ -7,7 +7,7 @@
     <classPathEntry location="D:\programsForDev\mysql-connector-java-5.1.26-bin.jar"/>
     <context id="testTables" targetRuntime="MyBatis3" >
         <!-- 数据Model属性对应Column获取插件
-        <plugin type="mybatis.generator.plugins.GeneratorSwagger2Doc">
+        <plugin type="mybatis.generator.plugins.GeneratorSwaggerDoc">
             <property name="apiModelAnnotationPackage" value="io.swagger.annotations.ApiModel" />
             <property name="apiModelPropertyAnnotationPackage" value="io.swagger.annotations.ApiModelProperty" />
         </plugin>

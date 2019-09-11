@@ -14,7 +14,7 @@ import java.util.List;
  * email misterchangray@hotmail.com
  * description 根据数据库注释对实体类增加swagger2文档注解
  */
-public class GeneratorSwagger2Doc extends PluginAdapter {
+public class GeneratorSwaggerDoc extends PluginAdapter {
     public boolean validate(List<String> list) {
         return true;
     }
@@ -23,17 +23,14 @@ public class GeneratorSwagger2Doc extends PluginAdapter {
     public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
         String classAnnotation = "@ApiModel";
         String fieldAnnotation = "@ApiModelProperty($(content))";
-        String jsonInclude = "@JsonInclude(JsonInclude.Include.NON_NULL)";
-        if (!topLevelClass.getAnnotations().contains(classAnnotation)) {
-            topLevelClass.addAnnotation(classAnnotation);
-        }
-        if (!topLevelClass.getAnnotations().contains(jsonInclude)) {
-            topLevelClass.addAnnotation(jsonInclude);
-        }
-
         String apiModelAnnotationPackage = properties.getProperty("apiModelAnnotationPackage");
         String apiModelPropertyAnnotationPackage = properties.getProperty("apiModelPropertyAnnotationPackage");
         String ignoreField = properties.getProperty("ignoreField");
+
+        if (!topLevelClass.getAnnotations().contains(classAnnotation)) {
+            topLevelClass.addAnnotation(classAnnotation);
+        }
+
         String[] ignoreFieldArray = null;
         if (ignoreField != null && ignoreField.trim().length() > 0) {
             ignoreFieldArray = ignoreField.split(",");
@@ -43,7 +40,6 @@ public class GeneratorSwagger2Doc extends PluginAdapter {
             apiModelPropertyAnnotationPackage = "io.swagger.annotations.ApiModelProperty";
         topLevelClass.addImportedType(apiModelAnnotationPackage);
         topLevelClass.addImportedType(apiModelPropertyAnnotationPackage);
-        topLevelClass.addImportedType("com.fasterxml.jackson.annotation.JsonInclude");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("value = \"");
         stringBuilder.append(introspectedColumn.getRemarks());

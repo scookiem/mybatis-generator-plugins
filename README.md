@@ -25,7 +25,7 @@
 自动为`entity`类生成`swagger2`文档注解，注解内容为数据库`comment`内容
 ``` xml
         <!-- 自动为entity生成swagger2文档-->
-        <plugin type="mybatis.generator.plugins.GeneratorSwagger2Doc">
+        <plugin type="mybatis.generator.plugins.GeneratorSwaggerDoc">
           <property name="apiModelAnnotationPackage" value="io.swagger.annotations.ApiModel" />
           <property name="apiModelPropertyAnnotationPackage" value="io.swagger.annotations.ApiModelProperty" />
         </plugin>
