@@ -30,9 +30,9 @@ public class GeneratorOtherAnnotation extends PluginAdapter {
         }
         topLevelClass.addImportedType("com.fasterxml.jackson.annotation.JsonInclude");
         /*不接受前台传值*/
-        String[] mustNullArray = "create_time,create_id,delete_time,delete_id".split(",");
-        for(String mustNull:mustNullArray){
-            if(introspectedColumn.getActualColumnName().equalsIgnoreCase(mustNull)){
+        String[] mustNullArray = properties.getProperty("nullColumns").split(",");
+        for (String mustNull : mustNullArray) {
+            if (introspectedColumn.getActualColumnName().equalsIgnoreCase(mustNull)) {
                 field.addAnnotation("@Null");
                 topLevelClass.addImportedType("javax.validation.constraints.Null");
             }
