@@ -44,6 +44,7 @@ public class GeneratorSwaggerDoc extends PluginAdapter {
         stringBuilder.append("value = \"");
         stringBuilder.append(introspectedColumn.getRemarks());
         stringBuilder.append("\"");
+        /*如果是字符串类型，添加示例*/
         if (String.class.getName().equals(field.getType().getFullyQualifiedName())) {
             stringBuilder.append(", example = \"");
             stringBuilder.append(introspectedColumn.getRemarks());
