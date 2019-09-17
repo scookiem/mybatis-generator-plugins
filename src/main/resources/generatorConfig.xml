@@ -1,70 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE generatorConfiguration
-        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
-
 <generatorConfiguration>
-    <classPathEntry location="D:\programsForDev\mysql-connector-java-5.1.26-bin.jar"/>
-    <context id="testTables" targetRuntime="MyBatis3" >
-        <!-- 数据Model属性对应Column获取插件
+    <!--classPathEntry:数据库的JDBC驱动,换成你自己的驱动位置 可选 -->
+    <!--<classPathEntry location="D:\generator_mybatis\mysql-connector-java-5.1.24-bin.jar" /> -->
+
+    <!-- 一个数据库一个context -->
+    <!--defaultModelType="flat" 大数据字段，不分表 -->
+    <context id="MysqlTables" targetRuntime="MyBatis3" defaultModelType="flat">
+        <property name="autoDelimitKeywords" value="true"/>
+        <!--设置关键字包裹符号-->
+        <!--<property name="beginningDelimiter" value="" />
+        <property name="endingDelimiter" value="" />-->
+        <property name="javaFileEncoding" value="utf-8"/>
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <!--自动生成swagger注解-->
         <plugin type="mybatis.generator.plugins.GeneratorSwaggerDoc">
-            <property name="apiModelAnnotationPackage" value="io.swagger.annotations.ApiModel" />
-            <property name="apiModelPropertyAnnotationPackage" value="io.swagger.annotations.ApiModelProperty" />
+            <property name="apiModelAnnotationPackage" value="io.swagger.annotations.ApiModel"/>
+            <property name="apiModelPropertyAnnotationPackage" value="io.swagger.annotations.ApiModelProperty"/>
+            <property name="ignoreField" value="delete_time,delete_id,global_root,salt,disable,company_id"/>
+        </plugin>
+        <!--自动生成date注解-->
+        <plugin type="mybatis.generator.plugins.GeneratorDateDoc">
+            <property name="dateformat" value="yyyy-MM-dd HH:mm:ss"/>
+            <property name="jsonformat" value="yyyy-MM-dd HH:mm:ss"/>
+        </plugin>
+        <plugin type="mybatis.generator.plugins.GeneratorOtherAnnotation">
+            <property name="nullColumns"
+                      value="{'create_time':'1','create_id':'2','delete_time':'3','delete_id':'4','disable':'5','company_id':'6','global_root':'7','salt':'8'}"/>
         </plugin>
 
-        <plugin type="mybatis.generator.plugins.ExtendEntitySetter" />
-  -->
+        <!-- 注释 -->
         <commentGenerator>
-            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
-            <property name="suppressAllComments" value="true" />
+            <property name="addRemarkComments" value="true"/>
+            <property name="suppressAllComments" value="false"/><!-- 是否取消注释 -->
+            <property name="suppressDate" value="true"/> <!-- 是否生成注释时间戳-->
         </commentGenerator>
-        <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/common_core?characterEncoding=UTF-8&amp;useSSL=true&amp;serverTimezone=GMT%2B8"
-                        userId="root"
-                        password="Zr12356789">
+
+        <!-- jdbc连接 -->
+        <jdbcConnection driverClass="org.postgresql.Driver" connectionURL="jdbc:postgresql://118.24.42.124:5432/sample"
+                        userId="postgres" password="postgres@2019">
         </jdbcConnection>
-        <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
-            NUMERIC 类型解析为java.math.BigDecimal -->
+        <!-- 类型转换 -->
         <javaTypeResolver>
-            <property name="forceBigDecimals" value="false" />
+            <!-- 是否使用bigDecimal， false可自动转化以下类型（Long, Integer, Short, etc.） -->
+            <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
-        <!-- targetProject:生成PO类的位置 -->
-        <javaModelGenerator targetPackage="com.zr.dao.entity"
-                            targetProject="src\main\java">
-            <!-- enableSubPackages:是否让schema作为包的后缀 -->
-            <property name="enableSubPackages" value="false" />
-            <!-- 从数据库返回的值被清理前后的空格 -->
-            <property name="trimStrings" value="true" />
-            <!-- 所有实体类继承PageInfo -->
-            <!--<property name="rootClass" value="com.zr.common.PageInfo" />-->
+
+        <!-- 生成实体类地址 -->
+        <javaModelGenerator targetPackage="com.looksure.sample.base.domain" targetProject="src/main/java">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
         </javaModelGenerator>
-        <!-- targetProject:mapper映射文件生成的位置 -->
-        <sqlMapGenerator targetPackage="com.zr.dao.xml"
-                         targetProject="src\main\java">
-            <!-- enableSubPackages:是否让schema作为包的后缀 -->
-            <property name="enableSubPackages" value="false" />
+        <!-- 生成mapxml文件 -->
+        <sqlMapGenerator targetPackage="resources/mapper" targetProject="src/main">
+            <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
-        <!-- targetPackage：mapper接口生成的位置 -->
-        <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="com.zr.dao.mapper"
-                             targetProject="src\main\java">
-            <!-- enableSubPackages:是否让schema作为包的后缀 -->
-            <property name="enableSubPackages" value="false" />
+        <!-- 生成mapxml对应client，也就是接口dao -->
+        <javaClientGenerator targetPackage="com.looksure.sample.base.dao" targetProject="src/main/java"
+                             type="XMLMAPPER">
+            <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
-
-        <!-- 指定数据库表 -->
-        <table tableName="user"><generatedKey column="id" sqlStatement="MySql" identity="true" /></table>
-        <table tableName="role"><generatedKey column="id" sqlStatement="MySql" identity="true" /></table>
-        <table tableName="permission"><generatedKey column="id" sqlStatement="MySql" identity="true" /></table>
-        <table tableName="role_permission_map"></table>
-        <table tableName="user_role_map"></table>
-
-
-        <!-- 有些表的字段需要指定java类型
-         <table schema="" tableName="">
-            <columnOverride column="" javaType="" />
-        </table> -->
+        <!--公司、字典、账号-->
+        <table tableName="core_company" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="core_account" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="core_dictionary" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <!--样品-->
+        <table tableName="biz_measurement" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="biz_quality_check" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="biz_quality_info" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="biz_sample" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+            <columnOverride column="source"
+                            javaType="com.looksure.sample.base.enums.ESampleSource"/>
+            <columnOverride column="status"
+                            javaType="com.looksure.sample.base.enums.ESampleStatus"/>
+        </table>
+        <!--问题-->
+        <table tableName="biz_template" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="biz_answer" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="core_item" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
+        <table tableName="core_question" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+            <columnOverride column="method" javaType="com.looksure.sample.base.enums.EQuestionMethod"/>
+            <columnOverride column="type" javaType="com.looksure.sample.base.enums.EQuestionType"/>
+        </table>
+        <table tableName="biz_question_template_rel" enableCountByExample="true" enableUpdateByExample="true"
+               enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        </table>
 
     </context>
 </generatorConfiguration>

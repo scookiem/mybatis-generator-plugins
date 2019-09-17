@@ -1,12 +1,13 @@
 package mybatis.generator.plugins;
 
+import com.alibaba.fastjson.JSONObject;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -30,10 +31,11 @@ public class GeneratorOtherAnnotation extends PluginAdapter {
         }
         topLevelClass.addImportedType("com.fasterxml.jackson.annotation.JsonInclude");
         /*不接受前台传值*/
-        String[] mustNullArray = properties.getProperty("nullColumns").split(",");
-        for (String mustNull : mustNullArray) {
+        HashMap<String, String> nullColumnMap = JSONObject.parseObject(properties.getProperty("nullColumns"),
+                HashMap.class);
+        for (String mustNull : nullColumnMap.keySet()) {
             if (introspectedColumn.getActualColumnName().equalsIgnoreCase(mustNull)) {
-                field.addAnnotation("@Null");
+                field.addAnnotation("@Null(message = \"" + nullColumnMap.get(mustNull) + "\")");
                 topLevelClass.addImportedType("javax.validation.constraints.Null");
             }
         }

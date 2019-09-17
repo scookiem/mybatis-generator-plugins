@@ -18,8 +18,8 @@ public class TestPlugins {
 
     @Before
     public void before() {
-        //¶ÁÈ¡mybatis²ÎÊý
-        configFile = new File("D:\\workspace\\myBatisGeneratorPlugins\\src\\main\\resources\\generatorConfig.xml");
+        //ï¿½ï¿½È¡mybatisï¿½ï¿½ï¿½ï¿½
+        configFile = new File("D:\\projects\\java\\mybatis-generator-plugins\\src\\main\\resources\\generatorConfig.xml");
 
 //        configFile = new File("/Users/zhangsiyuan/Documents/MybatisFun/Mybatis-Chapter9-GeneratorPlugin/src/main/resources/mybatisConfig.xml");
     }
